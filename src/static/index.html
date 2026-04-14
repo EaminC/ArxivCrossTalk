@@ -264,6 +264,25 @@
 
         <div class="divider"></div>
 
+        <!-- Script Length -->
+        <div class="mb-4">
+          <div class="sec-label" data-i18n="section_length">脚本长度</div>
+          <div class="twin-tabs">
+            <div class="twin-tab" id="len-short" onclick="setLength('short')">
+              ⚡ <span data-i18n="len_short">短</span>
+            </div>
+            <div class="twin-tab active" id="len-medium" onclick="setLength('medium')">
+              📄 <span data-i18n="len_medium">中</span>
+            </div>
+            <div class="twin-tab" id="len-long" onclick="setLength('long')">
+              📚 <span data-i18n="len_long">长</span>
+            </div>
+          </div>
+          <div class="form-text" id="length-hint" data-i18n="len_hint_medium">均衡详尽，约 35 段对话，8-12 分钟</div>
+        </div>
+
+        <div class="divider"></div>
+
         <!-- BGM -->
         <div class="mb-4">
           <div class="sec-label" data-i18n="section_bgm">背景音乐</div>
@@ -312,6 +331,7 @@
                      oninput="$('speech-rate-val').textContent=parseFloat(this.value).toFixed(2)+'x'"/>
               <span class="slider-val" id="speech-rate-val">1.00x</span>
             </div>
+            <div class="form-text" data-i18n="speed_note" style="padding-left:76px;">仅影响语音速度，不影响 BGM 节奏</div>
           </div>
         </div>
 
@@ -371,12 +391,18 @@ const T = {
     header_sub:      "把 arXiv 论文变成科研相声，让学术研究有趣起来",
     section_source:  "论文来源",     tab_preset:   "经典论文",   tab_custom:   "自定义链接",
     section_lang:    "相声语言",
+    section_length:  "脚本长度",
+    len_short: "短", len_medium: "中", len_long: "长",
+    len_hint_short:  "精华摘要，约 18 段对话，3-5 分钟",
+    len_hint_medium: "均衡详尽，约 35 段对话，8-12 分钟",
+    len_hint_long:   "深度解析，约 65 段对话，18-25 分钟，含追问反驳",
     section_bgm:     "背景音乐",
     bgm_preset:      "预设",         bgm_uploaded: "已上传",     bgm_upload_new: "上传新文件",  bgm_none: "无 BGM",
     bgm_upload_hint: "支持 MP3 / WAV / OGG / FLAC",
     bgm_none_hint:   "不添加背景音乐。",
     section_audio:   "音频参数",
     label_bgm_vol:   "BGM 音量",     label_reverb: "混响强度",   label_speed: "语速",
+    speed_note:      "仅影响语音速度，不影响 BGM 节奏",
     btn_generate:    "开始生成",
     sec_result_audio:"生成的音频",
     empty_hint:      "设置参数后点击「开始生成」",
@@ -392,12 +418,18 @@ const T = {
     header_sub:      "Turn arXiv papers into academic stand-up comedy",
     section_source:  "Paper Source", tab_preset:   "Classic Papers", tab_custom:   "Custom URL",
     section_lang:    "Script Language",
+    section_length:  "Script Length",
+    len_short: "Short", len_medium: "Medium", len_long: "Long",
+    len_hint_short:  "Highlights only, ~18 exchanges, 3-5 min",
+    len_hint_medium: "Balanced, ~35 exchanges, 8-12 min",
+    len_hint_long:   "Deep dive, ~65 exchanges, 18-25 min, with rebuttals",
     section_bgm:     "Background Music",
     bgm_preset:      "Preset",        bgm_uploaded: "Uploaded",      bgm_upload_new: "Upload New",  bgm_none: "No BGM",
     bgm_upload_hint: "Supports MP3 / WAV / OGG / FLAC",
     bgm_none_hint:   "No background music will be added.",
     section_audio:   "Audio Parameters",
     label_bgm_vol:   "BGM Volume",    label_reverb: "Reverb",        label_speed: "Speed",
+    speed_note:      "Voice speed only — BGM tempo is unaffected",
     btn_generate:    "Generate",
     sec_result_audio:"Generated Audio",
     empty_hint:      "Configure settings and click Generate",
@@ -444,7 +476,7 @@ function toggleDark() {
 }
 
 // ── State ────────────────────────────────────────────────────────────────
-let _source = 'preset', _lang = 'zh', _bgmTab = 'preset';
+let _source = 'preset', _lang = 'zh', _bgmTab = 'preset', _length = 'medium';
 const fmtFloat = v => parseFloat(v).toFixed(2);
 
 function setSource(v) {
@@ -459,6 +491,14 @@ function setLang(v) {
   _lang = v;
   $('lang-zh').classList.toggle('active', v === 'zh');
   $('lang-en').classList.toggle('active', v === 'en');
+}
+
+const _LEN_KEYS = ['short','medium','long'];
+function setLength(v) {
+  _length = v;
+  _LEN_KEYS.forEach(k => $(`len-${k}`).classList.toggle('active', k === v));
+  $('length-hint').dataset.i18n = `len_hint_${v}`;
+  $('length-hint').textContent  = t(`len_hint_${v}`);
 }
 
 const BGM_KEYS = ['preset','uploaded','upload','none'];
@@ -543,6 +583,7 @@ async function generate() {
     fd.append('arxiv_url',          arxivUrl);
     fd.append('preset_url',         presetUrl);
     fd.append('language',           _lang);
+    fd.append('length',             _length);
     fd.append('bgm_source',         _bgmTab);
     fd.append('bgm_preset_file',    $('bgm-preset-select').value);
     fd.append('bgm_uploaded_file',  $('bgm-uploaded-select').value);

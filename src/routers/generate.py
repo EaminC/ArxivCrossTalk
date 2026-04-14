@@ -46,13 +46,14 @@ async def upload_bgm(file: UploadFile = File(...)) -> JSONResponse:
 def _sync_generate(
     arxiv_url: str,
     language: str,
+    length: str,
     bgm_path: Optional[str],
     bgm_mix_ratio: float,
     reverb_amount: float,
     speech_rate: float,
 ) -> dict:
     paper_text = pdf_to_text(arxiv_url)
-    script_data = paper_to_crosstalk_json(paper_text=paper_text, language=language)
+    script_data = paper_to_crosstalk_json(paper_text=paper_text, language=language, length=length)
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     stem = f"crosstalk_{language}_{ts}"
     script_path = OUTPUT_DIR / f"{stem}.json"
@@ -79,6 +80,7 @@ async def generate(
     arxiv_url: str = Form(default=""),
     preset_url: str = Form(default=""),
     language: str = Form(default="zh"),
+    length: str = Form(default="medium"),
     bgm_source: str = Form(default="preset"),
     bgm_preset_file: str = Form(default=""),
     bgm_uploaded_file: str = Form(default=""),
@@ -116,6 +118,7 @@ async def generate(
             _sync_generate,
             target_url,
             language,
+            length,
             bgm_path,
             bgm_mix_ratio,
             reverb_amount,
