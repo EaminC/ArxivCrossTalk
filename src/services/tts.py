@@ -90,7 +90,8 @@ def script_to_speech(
         if len(bgm) < len(speech):
             bgm = bgm * ((len(speech) // len(bgm)) + 1)
         bgm = bgm[: len(speech)]
-        gain_db = -25 + max(0.0, min(1.0, bgm_mix_ratio)) * 20
+        # Raise BGM baseline so default mixes sound less quiet.
+        gain_db = -20 + max(0.0, min(1.0, bgm_mix_ratio)) * 20
         speech = speech.overlay(bgm + gain_db)
 
     speech = _reverb(speech, reverb_amount)
