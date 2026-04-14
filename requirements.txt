@@ -1,0 +1,9 @@
+arxiv2text
+python-dotenv
+openai
+edge-tts
+pydub
+fastapi
+uvicorn[standard]
+python-multipart
+aiofiles

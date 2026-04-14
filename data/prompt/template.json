@@ -1,0 +1,60 @@
+{
+  "title": "Attention Is All You Need - 科研相声版",
+  "language": "zh",
+  "segments": [
+    {
+      "stage": "opening",
+      "role": "male",
+      "text": "各位观众朋友大家好，今天我们不说评书，说一篇改变 AI 江湖的论文。",
+      "pause_in_seconds": 0.4
+    },
+    {
+      "stage": "intro",
+      "role": "female",
+      "text": "名字就很霸气，Attention Is All You Need，翻译过来就是：你先别卷参数，先把注意力拉满。",
+      "pause_in_seconds": 0.4
+    },
+    {
+      "stage": "background",
+      "role": "male",
+      "text": "在它出现之前，机器翻译主要靠 RNN 和 LSTM，信息传远了容易忘，训练也慢。",
+      "pause_in_seconds": 0.3
+    },
+    {
+      "stage": "motivation",
+      "role": "female",
+      "text": "作者就想，能不能不按时间步一个字一个字算，而是让每个词直接看全句，省时还聪明。",
+      "pause_in_seconds": 0.3
+    },
+    {
+      "stage": "innovation",
+      "role": "male",
+      "text": "核心开创点就是 Transformer：用自注意力机制替代循环结构，实现全局依赖建模。",
+      "pause_in_seconds": 0.3
+    },
+    {
+      "stage": "method",
+      "role": "female",
+      "text": "具体技术上有多头注意力、位置编码、残差连接和层归一化，既并行又稳定。",
+      "pause_in_seconds": 0.3
+    },
+    {
+      "stage": "experiments",
+      "role": "male",
+      "text": "实验部分显示，它在机器翻译任务上效果和效率都很强，训练成本也明显下降。",
+      "pause_in_seconds": 0.3
+    },
+    {
+      "stage": "outlook",
+      "role": "female",
+      "text": "后来的大模型、视觉模型、语音模型都在借鉴这套思路，影响一路扩展到整个 AI 产业。",
+      "pause_in_seconds": 0.3
+    },
+    {
+      "stage": "ending",
+      "role": "male",
+      "text": "今天的科研相声先到这儿，咱们下回继续拆论文，越听越懂，越懂越快乐。",
+      "pause_in_seconds": 0.6
+    }
+  ]
+}
