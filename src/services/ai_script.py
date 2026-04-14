@@ -18,6 +18,7 @@ _BASE_SYSTEM = {
 3. 开场要有相声式热场白，结尾要有谢幕词。
 4. 内容既风趣幽默，又忠实于论文实际内容，不捏造实验数字。
 5. 只返回 JSON，不加任何 Markdown 包装或解释文字。
+6. segments 数组里的每一项都必须包含且只能使用 4 个核心字段：stage、role、text、pause_in_seconds（任何一项都不能缺失，字段名必须完全一致）。
 
 JSON 结构：
 {
@@ -44,6 +45,7 @@ Requirements:
 3. The opening should be a lively warm-up; the ending should be a proper sign-off.
 4. Content must be both entertaining and faithful to the paper — never fabricate experimental numbers.
 5. Return ONLY the JSON. No Markdown fences, no explanations.
+6. Every segment item must include all four required fields with exact names: stage, role, text, pause_in_seconds (none can be missing).
 
 JSON schema:
 {

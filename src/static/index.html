@@ -144,6 +144,28 @@
     body.dark .loading-overlay { background: rgba(28,28,46,.88); }
     .loading-overlay.show { display: flex; }
     .loading-step { font-size: .85rem; font-weight: 500; color: var(--primary); max-width: 240px; text-align: center; }
+    .loading-progress {
+      width: min(260px, 85%);
+    }
+    .loading-progress-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(91, 94, 244, .16);
+      overflow: hidden;
+    }
+    .loading-progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #5b5ef4 0%, #7c3aed 100%);
+      transition: width .25s ease;
+    }
+    .loading-progress-text {
+      margin-top: .4rem;
+      font-size: .78rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
 
     /* ── Empty state ── */
     .empty-state {
@@ -229,6 +251,12 @@
         <div class="loading-overlay" id="left-overlay">
           <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status"></div>
           <div class="loading-step" id="step-text">…</div>
+          <div class="loading-progress">
+            <div class="loading-progress-track">
+              <div class="loading-progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="loading-progress-text" id="progress-text">0%</div>
+          </div>
         </div>
 
         <!-- Source -->
@@ -556,7 +584,16 @@ async function generate() {
   const btn     = $('gen-btn');
   const overlay = $('left-overlay');
   const stepEl  = $('step-text');
+  const progressBar = $('progress-bar');
+  const progressText = $('progress-text');
   const errEl   = $('error-msg');
+  const stepTargets = [20, 50, 78, 92];
+
+  const setProgress = (v) => {
+    const clamped = Math.max(0, Math.min(100, Math.round(v)));
+    progressBar.style.width = `${clamped}%`;
+    progressText.textContent = `${clamped}%`;
+  };
 
   errEl.classList.add('d-none');
 
@@ -572,10 +609,20 @@ async function generate() {
   overlay.classList.add('show');
 
   let si = 0;
+  let progress = 8;
+  let targetProgress = stepTargets[0];
+  setProgress(progress);
   stepEl.textContent = t(STEP_KEYS[si]);
+  const progressTimer = setInterval(() => {
+    if (progress < targetProgress) {
+      progress += 1;
+      setProgress(progress);
+    }
+  }, 300);
   const timer = setInterval(() => {
     si = Math.min(si + 1, STEP_KEYS.length - 1);
     stepEl.textContent = t(STEP_KEYS[si]);
+    targetProgress = stepTargets[si];
   }, 8000);
 
   try {
@@ -598,6 +645,8 @@ async function generate() {
     const res  = await fetch('/api/generate', { method: 'POST', body: fd });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Server error');
+    progress = 100;
+    setProgress(progress);
 
     $('empty-state').classList.add('d-none');
     $('result-content').classList.remove('d-none');
@@ -612,6 +661,7 @@ async function generate() {
     errEl.classList.remove('d-none');
   } finally {
     clearInterval(timer);
+    clearInterval(progressTimer);
     btn.disabled = false;
     overlay.classList.remove('show');
   }
